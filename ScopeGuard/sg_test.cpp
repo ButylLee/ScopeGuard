@@ -10,9 +10,9 @@ TEST_MAIN
 
 #if FUNC_OUTPUT
 #define PRINTMSG \
-printf_s("function: %s%s>line: %d\n", __func__, \
-"---------------------------------------------" \
-"-----------------" + sizeof(__func__), __LINE__);
+printf_s("function: %s %s>line: %d\n", __func__, \
+"----------------------------------------------" \
+"------------------" + sizeof(__func__), __LINE__);
 #else
 #define PRINTMSG
 #endif
