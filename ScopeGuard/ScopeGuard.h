@@ -1,17 +1,18 @@
 ﻿#pragma once
 
 /*
- *    <ScopeGuard>  By James Taylor(ButylLee)
+ *         <ScopeGuard>  By James Taylor(ButylLee)
  *
- * ScopeGuard is a so-called Universal Resource Management Class,
- * which is an implement of RAII pattern. It provides a common way
- * of automatically releasing the resource acquired by the users
- * (programmer). Unlike smart pointer, ScopeGuard is not taking
- * charge of acquisition but release, referring to the resources
- * for which are too various to write control class respectively,
- * and users are supposed to acquire resource first then bind it
- * to ScopeGuard. It would operate when exiting current scope by
- * function return, exception throw, etc.
+ * ScopeGuard is a so-called Universal Resource Management
+ * Class that employs RAII pattern. It provides a common way
+ * of automatically releasing the resource acquired by the
+ * users(programmer) via executing a provided callback when
+ * leaving scope. Unlike smart pointer, ScopeGuard is not
+ * taking charge of acquisition but release, referring to the
+ * resources for which are too various to write control class
+ * respectively, and users are supposed to acquire resource
+ * first then bind it to ScopeGuard. It would operate when
+ * exiting current scope by function return, exception throw, etc.
  *
  * NOTICE: You are NOT supposed to throw an exception or invoke
  * a throwing callable within ScopeGuard, if you did so, which

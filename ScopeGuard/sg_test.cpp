@@ -40,6 +40,10 @@ namespace {
 	{
 		void operator()() { PRINTMSG }
 	}expect_functor;
+	struct expect_struct_const
+	{
+		void operator()() const { PRINTMSG }
+	}expect_functor_const;
 	struct expect_struct_nothrow
 	{
 		void operator()() noexcept { PRINTMSG }
