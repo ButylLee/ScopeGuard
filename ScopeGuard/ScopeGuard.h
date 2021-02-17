@@ -54,7 +54,7 @@
  *     // postpone release vvv
  *     auto foo(){
  *         // acquire resource here
- *         auto sg = MakeScopeGuard([&] { // release statment });
+ *         auto sg = sg::MakeScopeGuard([&] { // release statment });
  *         return sg;
  *     }
  *     -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
