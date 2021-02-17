@@ -77,13 +77,13 @@ namespace {
 	std::function<void(int)> para_int_stdfun = para_int;
 
 
-	auto factory()
+	auto sgFactory()
 	{
 		auto sg = sg::MakeScopeGuard(expect_func);
 		return sg;
 	}
 	template<typename Fun>
-	decltype(auto) factory(Fun&& fun)
+	decltype(auto) sgFactory(Fun&& fun)
 	{
 		auto sg = sg::MakeScopeGuard(std::forward<Fun>(fun));
 		return sg;
@@ -113,21 +113,16 @@ TEST_METHOD(USAGE_SCOPEGUARD)
 	SCOPEGUARD(expect_struct());
 	SCOPEGUARD([]{ PRINTMSG });
 
-	//SCOPEGUARD(throwing);
+
 }
 
+// same as USAGE_SCOPEGUARD at large
 TEST_METHOD(USAGE_MakeScopeGuard)
 {
-	auto sg1 = sg::MakeScopeGuard(expect_func);
-	auto sg2 = sg::MakeScopeGuard([]{ PRINTMSG });
-	auto sg3 = factory();
-	auto sg4 = factory(expect_func);
-	auto sg5 = factory([]{});
-	try {
-		throwing();
-	}
-	catch (const std::exception&){
-		PRINTMSG
-	}
+	auto sg = sg::MakeScopeGuard(expect_func);
+
+	auto sg2 = sgFactory();
+	auto sg3 = sgFactory(expect_func);
+	auto sg4 = sgFactory([]{});
 
 }
