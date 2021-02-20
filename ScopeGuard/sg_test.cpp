@@ -13,6 +13,7 @@ TEST_MAIN
 printf_s("function: %s %s>line: %d\n", __func__, \
 "----------------------------------------------" \
 "------------------" + sizeof(__func__), __LINE__);
+//printf_s("function: %-60s line: %d\n", __func__, __LINE__);
 #else
 #define PRINTMSG
 #endif
