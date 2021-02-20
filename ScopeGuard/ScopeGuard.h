@@ -75,7 +75,8 @@
 
 
 #define ON_SCOPE_EXIT \
-		auto LINE_NAME(OnScopeExit_Block_,__LINE__) = sg::detail::eOnScopeExit() + [&]()
+		auto LINE_NAME(OnScopeExit_Block_,__LINE__) = \
+		sg::detail::eOnScopeExit() + [&]() noexcept ->void
 #define SCOPEGUARD(callback) \
 		auto LINE_NAME(SCOPEGUARD_,__LINE__) = sg::MakeScopeGuard(callback)
 

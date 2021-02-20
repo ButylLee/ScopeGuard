@@ -97,6 +97,28 @@ TEST_METHOD(USAGE_ON_SCOPE_EXIT)
 		PRINTMSG
 	};
 
+	ON_SCOPE_EXIT{
+		expect_func();
+		expect_func_nothrow();
+	};
+
+	ON_SCOPE_EXIT{
+		//throw runtime_error(message); // could NOT throw here
+	};
+	ON_SCOPE_EXIT{
+		//return 0; // could NOT return value here
+		return;
+	};
+
+	int mutable_v = 0;
+	string mutable_str = "origin string";
+	ON_SCOPE_EXIT{
+		mutable_v = 1;
+		mutable_str = " changed string";
+		cout << mutable_v << mutable_str << endl;
+	};
+
+
 }
 
 TEST_METHOD(USAGE_SCOPEGUARD)
@@ -120,6 +142,7 @@ TEST_METHOD(USAGE_SCOPEGUARD)
 TEST_METHOD(USAGE_MakeScopeGuard)
 {
 	auto sg = sg::MakeScopeGuard(expect_func);
+
 
 	auto sg2 = sgFactory();
 	auto sg3 = sgFactory(expect_func);
