@@ -5,6 +5,8 @@ A header-only, modern C++ ScopeGuard facility that provide multiple usages which
 
 ### Simple examples
 
+There're 3 ways to use ScopeGuard:
+
 ```C++
 #include "ScopeGuard.h"
 ...
@@ -12,6 +14,7 @@ A header-only, modern C++ ScopeGuard facility that provide multiple usages which
     ...
     ON_SCOPE_EXIT{
         // callback statments
+        // such as releasing resources
     };
     ...
 } // callback statments are executed at this point
@@ -24,15 +27,16 @@ A header-only, modern C++ ScopeGuard facility that provide multiple usages which
     ...
     SCOPEGUARD(my_callback);
     ...
-} // my_callback is invoked at this point
+    SCOPEGUARD([&] { // releasing resources });
+    ...
+} // lambda and my_callback are invoked at this point
 ```
 
 ```C++
 ...
 {
-    void my_callback();
     ...
-    auto sg = sg::MakeScopeGuard(my_callback);
+    auto guard = sg::MakeScopeGuard(my_callback);
     ...
 } // my_callback is invoked at this point
 ```

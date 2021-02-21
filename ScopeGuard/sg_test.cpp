@@ -83,6 +83,7 @@ namespace {
 		auto sg = sg::MakeScopeGuard(expect_func);
 		return sg;
 	}
+
 	template<typename Fun>
 	decltype(auto) sgFactory(Fun&& fun)
 	{
