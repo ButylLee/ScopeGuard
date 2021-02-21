@@ -7,6 +7,7 @@ A header-only, modern C++ ScopeGuard facility that provide multiple usages which
 
 There're 3 ways to use ScopeGuard:
 
+1. Put the code executing when leaving current scope in code block ON_SCOPE_EXIT{ }.
 ```C++
 #include "ScopeGuard.h"
 ...
@@ -20,6 +21,8 @@ There're 3 ways to use ScopeGuard:
 } // callback statments are executed at this point
 ```
 
+2. put callable in SCOPEGUARD( )
+
 ```C++
 ...
 {
@@ -31,6 +34,8 @@ There're 3 ways to use ScopeGuard:
     ...
 } // lambda and my_callback are invoked at this point
 ```
+
+3. using the make function MakeScopeGuard manually.
 
 ```C++
 ...
