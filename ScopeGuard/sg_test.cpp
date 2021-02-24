@@ -30,52 +30,67 @@ namespace {
 	void para_int(int) { PRINTMSG }
 
 
-	auto* expect_func_pointer = expect_func;
-	auto* expect_func_nothrow_pointer = expect_func_nothrow;
-	auto* throwing_pointer = throwing;
-	auto* returning_pointer = returning;
-	auto* para_int_pointer = para_int;
+	auto* pointer_expect_func = expect_func;
+	auto* pointer_expect_func_nothrow = expect_func_nothrow;
+	auto* pointer_throwing = throwing;
+	auto* pointer_returning = returning;
+	auto* pointer_para_int = para_int;
 
 
 	struct expect_struct
 	{
 		void operator()() { PRINTMSG }
-	}expect_functor;
+	}functor_expect;
 	struct expect_struct_const
 	{
 		void operator()() const { PRINTMSG }
-	}expect_functor_const;
+	}functor_expect_const;
 	struct expect_struct_nothrow
 	{
 		void operator()() noexcept { PRINTMSG }
-	}expect_functor_nothrow;
+	}functor_expect_nothrow;
 
 	struct throwing_struct
 	{
 		[[noreturn]] void operator()() { throw std::runtime_error(message); }
-	}throwing_functor;
+	}functor_throwing;
 	struct returning_struct
 	{
 		int operator()() { PRINTMSG return{}; }
-	}returning_functor;
+	}functor_returning;
 	struct para_int_struct
 	{
 		void operator()(int) { PRINTMSG }
-	}para_int_functor;
+	}functor_para_int;
+
+	struct rvalue_test_class
+	{
+		void operator()(){ cout << this->x << endl; }
+		rvalue_test_class& setx(int x){ this->x = x; return *this; }
+	private:
+		int x = 0;
+	}functor_rvalue_test;
 
 
-	auto expect_lambda = [] { PRINTMSG };
-	auto expect_lambda_copy_cap = [=] { PRINTMSG };
-	auto expect_lambda_ref_cap = [&] { PRINTMSG };
+	auto lambda_expect = [] { PRINTMSG };
+	auto lambda_expect_copy_cap = [=] { PRINTMSG };
+	auto lambda_expect_ref_cap = [&] { PRINTMSG };
 
 
 	using StdFun = std::function<void()>;
-	StdFun throwing_stdfun = throwing;
-	StdFun expect_stdfun = expect_func;
-	StdFun expect_stdfun_nothrow = expect_func_nothrow;
+	StdFun stdfun_throwing = throwing;
+	StdFun stdfun_expect = expect_func;
+	StdFun stdfun_expect_nothrow = expect_func_nothrow;
 
-	std::function<int()> returning_stdfun = returning;
-	std::function<void(int)> para_int_stdfun = para_int;
+	std::function<int()> stdfun_returning = returning;
+	std::function<void(int)> stdfun_para_int = para_int;
+
+
+	auto bind_expect_func = bind(expect_func);
+
+	auto bind_throwing = bind(throwing);
+	auto bind_returning = bind(returning);
+	auto bind_para_int = bind(para_int);
 
 
 	auto sgFactory()
@@ -126,12 +141,46 @@ TEST_METHOD(USAGE_ON_SCOPE_EXIT)
 TEST_METHOD(USAGE_SCOPEGUARD)
 {
 	// pass by lvalue
-	SCOPEGUARD(expect_lambda);
-	SCOPEGUARD(expect_functor);
+	SCOPEGUARD(lambda_expect);
+	SCOPEGUARD(functor_expect);
 	SCOPEGUARD(expect_func);
-	SCOPEGUARD(expect_func_pointer);
+	SCOPEGUARD(pointer_expect_func);
 
-	//SCOPEGUARD(expect_stdfun);
+	SCOPEGUARD(expect_func_nothrow);
+
+	//SCOPEGUARD(throwing);
+	//SCOPEGUARD(returning);
+	//SCOPEGUARD(para_int);
+	//SCOPEGUARD(para_int);
+	//SCOPEGUARD(pointer_throwing);
+	//SCOPEGUARD(pointer_returning);
+	//SCOPEGUARD(pointer_para_int);
+
+	SCOPEGUARD(pointer_expect_func);
+	SCOPEGUARD(pointer_expect_func_nothrow);
+
+
+	SCOPEGUARD(functor_expect);
+	SCOPEGUARD(functor_expect_const);
+	SCOPEGUARD(functor_expect_nothrow);
+	//SCOPEGUARD(functor_throwing);
+	//SCOPEGUARD(functor_returning);
+	//SCOPEGUARD(functor_para_int);
+
+	SCOPEGUARD(lambda_expect);
+	SCOPEGUARD(lambda_expect_copy_cap);
+	SCOPEGUARD(lambda_expect_ref_cap);
+
+	//SCOPEGUARD(stdfun_throwing);
+	SCOPEGUARD(stdfun_expect);
+	SCOPEGUARD(stdfun_expect_nothrow);
+	//SCOPEGUARD(stdfun_returning);
+	//SCOPEGUARD(stdfun_para_int);
+
+	SCOPEGUARD(bind_expect_func);
+	//SCOPEGUARD(bind_throwing);
+	//SCOPEGUARD(bind_returning);
+	//SCOPEGUARD(bind_para_int);
 
 	// pass by rvalue
 	SCOPEGUARD(&expect_func);
@@ -147,7 +196,7 @@ TEST_METHOD(USAGE_MakeScopeGuard)
 	auto sg = sg::MakeScopeGuard(expect_func);
 
 	auto sg2 = sgFactory();
-	auto sg3 = sgFactory([] { cout << "from factory" << endl; });
+	auto sg3 = sgFactory([] { cout << "lambda from factory" << endl; });
 
 
 }
@@ -159,14 +208,7 @@ TEST_METHOD(TEST_PASS_RVALUE)
 	SCOPEGUARD(*f);
 	f = []{cout << "changed" << endl; };
 
-	struct test_class
-	{
-		void operator()(){ cout << this->x << endl; }
-		test_class& setx(int x){ this->x = x; return *this; }
-	private:
-		int x = 0;
-	}test_functor;
-	SCOPEGUARD(std::move(test_functor));
-	test_functor.setx(1)();
+	SCOPEGUARD(std::move(functor_rvalue_test));
+	functor_rvalue_test.setx(1)();
 
 }
