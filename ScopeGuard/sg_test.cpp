@@ -130,6 +130,7 @@ TEST_METHOD(USAGE_SCOPEGUARD)
 	SCOPEGUARD(expect_functor);
 	SCOPEGUARD(expect_func);
 	SCOPEGUARD(expect_func_pointer);
+
 	//SCOPEGUARD(expect_stdfun);
 
 	// pass by rvalue
@@ -145,9 +146,27 @@ TEST_METHOD(USAGE_MakeScopeGuard)
 {
 	auto sg = sg::MakeScopeGuard(expect_func);
 
-
 	auto sg2 = sgFactory();
-	auto sg3 = sgFactory(expect_func);
-	auto sg4 = sgFactory([]{});
+	auto sg3 = sgFactory([] { cout << "from factory" << endl; });
+
+
+}
+
+TEST_METHOD(TEST_PASS_RVALUE)
+{
+	using fun_type = void(*)();
+	fun_type f = []{cout << "origin" << endl; };
+	SCOPEGUARD(*f);
+	f = []{cout << "changed" << endl; };
+
+	struct test_class
+	{
+		void operator()(){ cout << this->x << endl; }
+		test_class& setx(int x){ this->x = x; return *this; }
+	private:
+		int x = 0;
+	}test_functor;
+	SCOPEGUARD(std::move(test_functor));
+	test_functor.setx(1)();
 
 }
