@@ -46,7 +46,7 @@ There're 3 ways to use ScopeGuard:
 } // my_callback is invoked at this point
 ```
 
-You could also see the comments in file ScopeGuard.h.
+You could also see the comments in [ScopeGuard.h](ScopeGuard/ScopeGuard.h).
 
 
 
