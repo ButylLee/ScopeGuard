@@ -2,7 +2,7 @@
 #include "ScopeGuard.h"
 #include <iostream>
 #include <functional>
-#define FUNC_OUTPUT 0
+#define FUNC_OUTPUT 1
 
 using namespace std;
 using namespace sg;
@@ -66,7 +66,7 @@ namespace {
 	struct test_rvalue_struct
 	{
 		void operator()(){ cout << this->x << endl; }
-		test_rvalue_struct& setx(int x){ this->x = x; return *this; }
+		void setx(int x){ this->x = x; }
 	private:
 		int x = 0;
 	}functor_test_rvalue;
@@ -194,8 +194,8 @@ TEST_METHOD(USAGE_SCOPEGUARD)
 	SCOPEGUARD(expect_struct());
 	SCOPEGUARD([]{ PRINTMSG });
 
-	SCOPEGUARD(functor_test_copy_move);
-	SCOPEGUARD(test_copy_move_struct());
+	SCOPEGUARD(functor_test_copy_move); // lvalue
+	SCOPEGUARD(test_copy_move_struct()); // rvalue
 }
 
 // same as USAGE_SCOPEGUARD at large
@@ -209,14 +209,17 @@ TEST_METHOD(USAGE_MakeScopeGuard)
 
 }
 
+// test case before merge branch std-function-like
 TEST_METHOD(TEST_PASS_RVALUE)
 {
 	using fun_type = void(*)();
 	fun_type f = []{cout << "origin" << endl; };
+	SCOPEGUARD(f);
 	SCOPEGUARD(*f);
 	f = []{cout << "changed" << endl; };
 
+	SCOPEGUARD(functor_test_rvalue);
 	SCOPEGUARD(std::move(functor_test_rvalue));
-	functor_test_rvalue.setx(1)();
+	functor_test_rvalue.setx(1);
 
 }
