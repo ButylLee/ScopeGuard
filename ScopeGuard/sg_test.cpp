@@ -63,13 +63,13 @@ namespace {
 		void operator()(int) { PRINTMSG }
 	}functor_para_int;
 
-	struct rvalue_test_class
+	struct test_rvalue_struct
 	{
 		void operator()(){ cout << this->x << endl; }
-		rvalue_test_class& setx(int x){ this->x = x; return *this; }
+		test_rvalue_struct& setx(int x){ this->x = x; return *this; }
 	private:
 		int x = 0;
-	}functor_rvalue_test;
+	}functor_test_rvalue;
 	struct test_copy_move_struct
 	{
 		void operator()(){ PRINTMSG }
@@ -195,6 +195,7 @@ TEST_METHOD(USAGE_SCOPEGUARD)
 	SCOPEGUARD([]{ PRINTMSG });
 
 	SCOPEGUARD(functor_test_copy_move);
+	SCOPEGUARD(test_copy_move_struct());
 }
 
 // same as USAGE_SCOPEGUARD at large
@@ -215,7 +216,7 @@ TEST_METHOD(TEST_PASS_RVALUE)
 	SCOPEGUARD(*f);
 	f = []{cout << "changed" << endl; };
 
-	SCOPEGUARD(std::move(functor_rvalue_test));
-	functor_rvalue_test.setx(1)();
+	SCOPEGUARD(std::move(functor_test_rvalue));
+	functor_test_rvalue.setx(1)();
 
 }
