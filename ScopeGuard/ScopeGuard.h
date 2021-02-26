@@ -1,6 +1,4 @@
-﻿#pragma once
-
-/*
+﻿/*
  *         <ScopeGuard>  By James Taylor(ButylLee)
  *
  * ScopeGuard is a so-called Universal Resource Management
@@ -60,8 +58,8 @@
  *     -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
  */
 
-#ifndef SCOPEGUARD_HEADER
-#define SCOPEGUARD_HEADER
+#ifndef SCOPEGUARD_H_
+#define SCOPEGUARD_H_
 
 // sizeof ScopeGuard with template: 8 in x86 and 16 in x64(aligned)
 // sizeof ScopeGuard with std::function: 48 in x86 and 72 in x64(aligned)
@@ -209,4 +207,4 @@ SG_END
 #undef SG_BEGIN
 #undef SG_END
 
-#endif // SCOPEGUARD_HEADER
+#endif // SCOPEGUARD_H_
