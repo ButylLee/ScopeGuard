@@ -2,7 +2,7 @@
 #include "ScopeGuard.h"
 #include <iostream>
 #include <functional>
-#define FUNC_OUTPUT 1
+#define FUNC_OUTPUT 0
 
 using namespace std;
 using namespace sg;
@@ -63,13 +63,20 @@ namespace {
 		void operator()(int) { PRINTMSG }
 	}functor_para_int;
 
-	struct rvalue_test_class
+	struct test_rvalue_struct
 	{
 		void operator()(){ cout << this->x << endl; }
-		rvalue_test_class& setx(int x){ this->x = x; return *this; }
+		test_rvalue_struct& setx(int x){ this->x = x; return *this; }
 	private:
 		int x = 0;
-	}functor_rvalue_test;
+	}functor_test_rvalue;
+	struct test_copy_move_struct
+	{
+		void operator()() { PRINTMSG }
+		test_copy_move_struct() = default;
+		test_copy_move_struct(const test_copy_move_struct&) { cout << "Copy Constructor" << endl; }
+		test_copy_move_struct(test_copy_move_struct&&) noexcept { cout << "Move Constructor" << endl; }
+	}functor_test_copy_move;
 
 
 	auto lambda_expect = [] { PRINTMSG };
@@ -187,7 +194,8 @@ TEST_METHOD(USAGE_SCOPEGUARD)
 	SCOPEGUARD(expect_struct());
 	SCOPEGUARD([]{ PRINTMSG });
 
-
+	SCOPEGUARD(functor_test_copy_move);
+	SCOPEGUARD(test_copy_move_struct());
 }
 
 // same as USAGE_SCOPEGUARD at large
@@ -208,7 +216,7 @@ TEST_METHOD(TEST_PASS_RVALUE)
 	SCOPEGUARD(*f);
 	f = []{cout << "changed" << endl; };
 
-	SCOPEGUARD(std::move(functor_rvalue_test));
-	functor_rvalue_test.setx(1)();
+	SCOPEGUARD(std::move(functor_test_rvalue));
+	functor_test_rvalue.setx(1)();
 
 }
