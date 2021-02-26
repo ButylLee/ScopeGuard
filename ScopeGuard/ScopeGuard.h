@@ -89,32 +89,34 @@ namespace detail {
 	constexpr bool is_proper_callback_v
 		= std::is_same_v<void, decltype(std::declval<T&&>()())>;
 
-	template<typename Callback, typename =
-		std::enable_if_t<is_proper_callback_v<Callback>>>
+	template<typename TCallback, typename =
+		std::enable_if_t<is_proper_callback_v<TCallback>>>
 	class ScopeGuard;
 
 	enum class eOnScopeExit {}; // dummy
 
-	template<typename Callback>
-	constexpr ScopeGuard<Callback> operator+(eOnScopeExit, Callback&& callback)
+	template<typename TCallback>
+	constexpr ScopeGuard<TCallback> operator+(eOnScopeExit, TCallback&& callback)
 	{
-		return ScopeGuard<Callback>(std::forward<Callback>(callback));
+		return ScopeGuard<TCallback>(std::forward<TCallback>(callback));
 	}
 
-	template<typename Callback>
-	constexpr ScopeGuard<Callback> MakeScopeGuard(Callback&& callback)
+	template<typename TCallback>
+	constexpr ScopeGuard<TCallback> MakeScopeGuard(TCallback&& callback)
 	{
-		return ScopeGuard<Callback>(std::forward<Callback>(callback));
+		return ScopeGuard<TCallback>(std::forward<TCallback>(callback));
 	}
 
-	template<typename Callback>
-	class ScopeGuard<Callback> final
+	template<typename TCallback>
+	class ScopeGuard<TCallback> final
 	{
-		friend constexpr ScopeGuard<Callback> operator+<Callback>(eOnScopeExit, Callback&&);
-		friend constexpr ScopeGuard<Callback> MakeScopeGuard<Callback>(Callback&&);
+		using Callback = std::decay_t<TCallback>;
+
+		friend constexpr ScopeGuard<TCallback> operator+<TCallback>(eOnScopeExit, TCallback&&);
+		friend constexpr ScopeGuard<TCallback> MakeScopeGuard<TCallback>(TCallback&&);
 	private:
-		explicit ScopeGuard(Callback&& callback)
-			:m_callback(std::forward<Callback>(callback))
+		explicit ScopeGuard(Callback callback)
+			:m_callback(std::move(callback))
 		{}
 	public:
 		~ScopeGuard() noexcept
@@ -125,7 +127,7 @@ namespace detail {
 
 		ScopeGuard(ScopeGuard&& other)
 			noexcept(std::is_nothrow_move_constructible_v<Callback>)
-			: m_callback(std::forward<Callback>(other.m_callback))
+			: m_callback(std::move(other.m_callback))
 			, m_active(other.m_active)
 		{
 			other.dismiss();
