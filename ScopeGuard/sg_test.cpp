@@ -2,7 +2,7 @@
 #include "ScopeGuard.h"
 #include <iostream>
 #include <functional>
-#define FUNC_OUTPUT 1
+#define FUNC_OUTPUT 0
 
 using namespace std;
 using namespace sg;
@@ -70,6 +70,13 @@ namespace {
 	private:
 		int x = 0;
 	}functor_rvalue_test;
+	struct test_copy_move_struct
+	{
+		void operator()(){ PRINTMSG }
+		test_copy_move_struct() = default;
+		test_copy_move_struct(const test_copy_move_struct&){ cout << "Copy Constructor" << endl; }
+		test_copy_move_struct(test_copy_move_struct&&) noexcept { cout << "Move Constructor" << endl; }
+	}functor_test_copy_move;
 
 
 	auto lambda_expect = [] { PRINTMSG };
@@ -187,7 +194,7 @@ TEST_METHOD(USAGE_SCOPEGUARD)
 	SCOPEGUARD(expect_struct());
 	SCOPEGUARD([]{ PRINTMSG });
 
-
+	SCOPEGUARD(functor_test_copy_move);
 }
 
 // same as USAGE_SCOPEGUARD at large
