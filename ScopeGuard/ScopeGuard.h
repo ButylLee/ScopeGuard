@@ -127,7 +127,7 @@ namespace detail {
 
 		ScopeGuard(ScopeGuard&& other)
 			noexcept(std::is_nothrow_move_constructible_v<Callback>)
-			: m_callback(std::forward<Callback>(other.m_callback))
+			: m_callback(std::move(other.m_callback))
 			, m_active(other.m_active)
 		{
 			other.dismiss();
