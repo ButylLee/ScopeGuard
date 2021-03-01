@@ -1,7 +1,7 @@
 # ScopeGuard
 A header-only, modern C++ ScopeGuard facility that provide multiple usages which are simple and easy to use.
 
-**NOTE:** It's NOT finished yet but basically usable.
+**NOTE:** It's almost finished but need more test.
 
 ### Simple examples
 
