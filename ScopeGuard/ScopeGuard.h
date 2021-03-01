@@ -68,15 +68,15 @@
 
 #define SG_BEGIN namespace sg {
 #define SG_END   }
-#define LINE_NAME_CAT(name,line) name##line
-#define LINE_NAME(name,line) LINE_NAME_CAT(name,line)
+#define SG_LINE_NAME_CAT(name,line) name##line
+#define SG_LINE_NAME(name,line) SG_LINE_NAME_CAT(name,line)
 
 
 #define ON_SCOPE_EXIT \
-		auto LINE_NAME(OnScopeExit_Block_,__LINE__) = \
+		auto SG_LINE_NAME(OnScopeExit_Block_,__LINE__) = \
 		sg::detail::eOnScopeExit() + [&]() noexcept ->void
 #define SCOPEGUARD(callback) \
-		auto LINE_NAME(SCOPEGUARD_,__LINE__) = sg::MakeScopeGuard(callback)
+		auto SG_LINE_NAME(SCOPEGUARD_,__LINE__) = sg::MakeScopeGuard(callback)
 
 #if SG_USING_TEMPLATE
 #include <type_traits>
