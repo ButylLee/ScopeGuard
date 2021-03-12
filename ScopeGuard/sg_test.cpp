@@ -12,8 +12,8 @@ TEST_MAIN
 #define PRINTMSG \
 printf_s("function: %s %s>line: %d\n", __func__, \
 "----------------------------------------------" \
-"------------------" + sizeof(__func__), __LINE__);
-//printf_s("function: %-60s line: %d\n", __func__, __LINE__);
+"------------------" + sizeof(__func__), __LINE__)
+//printf_s("function: %-60s line: %d\n", __func__, __LINE__)
 #else
 #define PRINTMSG
 #endif
@@ -22,12 +22,12 @@ namespace {
 	constexpr auto message = "message in a bottle";
 	constexpr int dump = 10;
 
-	void expect_func() { PRINTMSG }
-	void expect_func_nothrow() noexcept{ PRINTMSG }
+	void expect_func() { PRINTMSG; CASE_DONE; }
+	void expect_func_nothrow() noexcept{ PRINTMSG; CASE_DONE; }
 
-	[[noreturn]] void throwing(){ PRINTMSG throw std::runtime_error(message); }
-	int returning() { PRINTMSG return{}; }
-	void para_int(int) { PRINTMSG }
+	[[noreturn]] void throwing() { PRINTMSG; CASE_DONE; throw std::runtime_error(message); }
+	int returning() { PRINTMSG; CASE_DONE; return{}; }
+	void para_int(int) { PRINTMSG; CASE_DONE; }
 
 
 	auto* pointer_expect_func = expect_func;
@@ -39,49 +39,49 @@ namespace {
 
 	struct expect_struct
 	{
-		void operator()() { PRINTMSG }
+		void operator()() { PRINTMSG; CASE_DONE; }
 	}functor_expect;
 	struct expect_struct_const
 	{
-		void operator()() const { PRINTMSG }
+		void operator()() const { PRINTMSG; CASE_DONE; }
 	}functor_expect_const;
 	struct expect_struct_nothrow
 	{
-		void operator()() noexcept { PRINTMSG }
+		void operator()() noexcept { PRINTMSG; CASE_DONE; }
 	}functor_expect_nothrow;
 
 	struct throwing_struct
 	{
-		[[noreturn]] void operator()() { throw std::runtime_error(message); }
+		[[noreturn]] void operator()() { CASE_DONE; CASE_DONE; throw std::runtime_error(message); }
 	}functor_throwing;
 	struct returning_struct
 	{
-		int operator()() { PRINTMSG return{}; }
+		int operator()() { PRINTMSG; CASE_DONE; return{}; }
 	}functor_returning;
 	struct para_int_struct
 	{
-		void operator()(int) { PRINTMSG }
+		void operator()(int) { PRINTMSG; CASE_DONE; }
 	}functor_para_int;
 
 	struct test_rvalue_struct
 	{
-		void operator()(){ cout << this->x << endl; }
+		void operator()() { cout << this->x << endl; }
 		void setx(int x){ this->x = x; }
 	private:
 		int x = 0;
 	}functor_test_rvalue;
 	struct test_copy_move_struct
 	{
-		void operator()() { PRINTMSG }
+		void operator()() { PRINTMSG; CASE_DONE; }
 		test_copy_move_struct() = default;
 		test_copy_move_struct(const test_copy_move_struct&) { cout << "Copy Constructor" << endl; }
 		test_copy_move_struct(test_copy_move_struct&&) noexcept { cout << "Move Constructor" << endl; }
 	}functor_test_copy_move;
 
 
-	auto lambda_expect = [] { PRINTMSG };
-	auto lambda_expect_copy_cap = [=] { PRINTMSG };
-	auto lambda_expect_ref_cap = [&] { PRINTMSG };
+	auto lambda_expect = [] { PRINTMSG; CASE_DONE; };
+	auto lambda_expect_copy_cap = [=] { PRINTMSG; CASE_DONE; };
+	auto lambda_expect_ref_cap = [&] { PRINTMSG; CASE_DONE; };
 
 
 	using StdFun = std::function<void()>;
@@ -117,14 +117,22 @@ namespace {
 
 TEST_METHOD(USAGE_ON_SCOPE_EXIT)
 {
-	ON_SCOPE_EXIT{
-		PRINTMSG
-	};
+	TEST_CASE
+		ON_SCOPE_EXIT{
+			PRINTMSG;
+			CASE_DONE;
+		};
+	
 
-	ON_SCOPE_EXIT{
-		expect_func();
-		expect_func_nothrow();
-	};
+	TEST_CASE
+		ON_SCOPE_EXIT{
+			expect_func();
+		};
+	
+	TEST_CASE
+		ON_SCOPE_EXIT{
+			expect_func_nothrow();
+		};
 
 	ON_SCOPE_EXIT{
 		//throw runtime_error(message); // could NOT throw here
@@ -148,12 +156,17 @@ TEST_METHOD(USAGE_ON_SCOPE_EXIT)
 TEST_METHOD(USAGE_SCOPEGUARD)
 {
 	// pass by lvalue
-	SCOPEGUARD(lambda_expect);
-	SCOPEGUARD(functor_expect);
-	SCOPEGUARD(expect_func);
-	SCOPEGUARD(pointer_expect_func);
+	TEST_CASE
+		SCOPEGUARD(lambda_expect);
+	TEST_CASE
+		SCOPEGUARD(functor_expect);
+	TEST_CASE
+		SCOPEGUARD(expect_func);
+	TEST_CASE
+		SCOPEGUARD(pointer_expect_func);
 
-	SCOPEGUARD(expect_func_nothrow);
+	TEST_CASE
+		SCOPEGUARD(expect_func_nothrow);
 
 	//SCOPEGUARD(throwing);
 	//SCOPEGUARD(returning);
@@ -163,48 +176,67 @@ TEST_METHOD(USAGE_SCOPEGUARD)
 	//SCOPEGUARD(pointer_returning);
 	//SCOPEGUARD(pointer_para_int);
 
-	SCOPEGUARD(pointer_expect_func);
-	SCOPEGUARD(pointer_expect_func_nothrow);
+	TEST_CASE
+		SCOPEGUARD(pointer_expect_func);
+	TEST_CASE
+		SCOPEGUARD(pointer_expect_func_nothrow);
 
 
-	SCOPEGUARD(functor_expect);
-	SCOPEGUARD(functor_expect_const);
-	SCOPEGUARD(functor_expect_nothrow);
+	TEST_CASE
+		SCOPEGUARD(functor_expect);
+	TEST_CASE
+		SCOPEGUARD(functor_expect_const);
+	TEST_CASE
+		SCOPEGUARD(functor_expect_nothrow);
 	//SCOPEGUARD(functor_throwing);
 	//SCOPEGUARD(functor_returning);
 	//SCOPEGUARD(functor_para_int);
 
-	SCOPEGUARD(lambda_expect);
-	SCOPEGUARD(lambda_expect_copy_cap);
-	SCOPEGUARD(lambda_expect_ref_cap);
+	TEST_CASE
+		SCOPEGUARD(lambda_expect);
+	TEST_CASE
+		SCOPEGUARD(lambda_expect_copy_cap);
+	TEST_CASE
+		SCOPEGUARD(lambda_expect_ref_cap);
 
 	//SCOPEGUARD(stdfun_throwing);
-	SCOPEGUARD(stdfun_expect);
-	SCOPEGUARD(stdfun_expect_nothrow);
+	TEST_CASE
+		SCOPEGUARD(stdfun_expect);
+	TEST_CASE
+		SCOPEGUARD(stdfun_expect_nothrow);
 	//SCOPEGUARD(stdfun_returning);
 	//SCOPEGUARD(stdfun_para_int);
 
-	SCOPEGUARD(bind_expect_func);
+	TEST_CASE
+		SCOPEGUARD(bind_expect_func);
 	//SCOPEGUARD(bind_throwing);
 	//SCOPEGUARD(bind_returning);
 	//SCOPEGUARD(bind_para_int);
 
 	// pass by rvalue
-	SCOPEGUARD(&expect_func);
-	SCOPEGUARD(expect_struct());
-	SCOPEGUARD([]{ PRINTMSG });
+	TEST_CASE
+		SCOPEGUARD(&expect_func);
+	TEST_CASE
+		SCOPEGUARD(expect_struct());
+	TEST_CASE
+		SCOPEGUARD([] { PRINTMSG; CASE_DONE; });
 
-	SCOPEGUARD(functor_test_copy_move); // lvalue
-	SCOPEGUARD(test_copy_move_struct()); // rvalue
+	TEST_CASE
+		SCOPEGUARD(functor_test_copy_move); // lvalue
+	TEST_CASE
+		SCOPEGUARD(test_copy_move_struct()); // rvalue
 }
 
 // same as USAGE_SCOPEGUARD at large
 TEST_METHOD(USAGE_MakeScopeGuard)
 {
-	auto sg = sg::MakeScopeGuard(expect_func);
+	TEST_CASE
+		auto sg = sg::MakeScopeGuard(expect_func);
 
-	auto sg2 = sgFactory();
-	auto sg3 = sgFactory([] { cout << "lambda from factory" << endl; });
+	TEST_CASE
+		auto sg2 = sgFactory();
+	TEST_CASE
+		auto sg3 = sgFactory([] { cout << "lambda from factory" << endl; CASE_DONE; });
 
 
 }
