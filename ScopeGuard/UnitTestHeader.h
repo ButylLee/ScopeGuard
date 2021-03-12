@@ -1,4 +1,8 @@
 ﻿#pragma once
+#define WIN32_LEAN_AND_MEAN
+#define NOSERVICE
+#define NOMCX
+#define NOIME
 #include <Windows.h>
 
 #define TEST_CAT_(L,R) L##R
