@@ -20,42 +20,42 @@
  *
  * (1) The recommended usage's as follows
  *
- *     -*-*-*-*-*-*-*-*-*-*-*-*-
- *     // acquire resource here
- *     ON_SCOPE_EXIT{
- *         // release statment here
- *     };
- *     -*-*-*-*-*-*-*-*-*-*-*-*-
+ *       -*-*-*-*-*-*-*-*-*-*-*-*-
+ *       // acquire resource here
+ *       ON_SCOPE_EXIT{
+ *           // release statment here
+ *       };
+ *       -*-*-*-*-*-*-*-*-*-*-*-*-
  *     You can put statments inside { } as in normal function
  *     body, they will be execute when exiting current scope.
  *
  * (2) Using this when you want to write lambda or pass function by yourself
  *
- *     -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
- *     // acquire resource here
- *     SCOPEGUARD([&] { // release statment });
- *                ^^^^lambda, function or executable object
- *     -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+ *       -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+ *       // acquire resource here
+ *       SCOPEGUARD([&] { // release statment });
+ *                  ^^^^lambda, function or executable object
+ *       -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
  *
  * (3) Using function MakeScopeGuard to create named variables when you
  *     have got to postpone or bring forward the release of resource.
  *
- *     -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
- *     // acquire resource here
- *     auto sg = sg::MakeScopeGuard([&] { // release statment });
- *                                  ^^^^lambda, function or executable object
+ *       -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+ *       // acquire resource here
+ *       auto sg = sg::MakeScopeGuard([&] { // release statment });
+ *                                    ^^^^lambda, function or executable object
  *
- *     // release ahead of time vvv
- *     // manual release statment
- *     sg.dismiss();
+ *       // release ahead of time vvv
+ *       // manual release statment
+ *       sg.dismiss();
  *
- *     // postpone release vvv
- *     auto foo(){
- *         // acquire resource here
- *         auto sg = sg::MakeScopeGuard([&] { // release statment });
- *         return sg;
- *     }
- *     -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
+ *       // postpone release vvv
+ *       auto foo(){
+ *           // acquire resource here
+ *           auto sg = sg::MakeScopeGuard([&] { // release statment });
+ *           return sg;
+ *       }
+ *       -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
  */
 
 #ifndef SCOPEGUARD_H_
@@ -83,6 +83,7 @@
 
 SG_BEGIN
 namespace detail {
+	// Determining whether a type is a proper callback that ScopeGuard need
 	template<typename T>
 	constexpr bool is_proper_callback_v
 		= std::is_same_v<void, decltype(std::declval<T&&>()())>;
@@ -91,6 +92,7 @@ namespace detail {
 		std::enable_if_t<is_proper_callback_v<TCallback>>>
 	class ScopeGuard;
 
+	/* --- The helper functions provided multiple usages --- */
 	enum class eOnScopeExit {}; // dummy
 
 	template<typename TCallback>
@@ -104,6 +106,7 @@ namespace detail {
 	{
 		return ScopeGuard<TCallback>(std::forward<TCallback>(callback));
 	}
+	/* ----------------------------------------------------- */
 
 	template<typename TCallback>
 	class ScopeGuard<TCallback> final
@@ -154,6 +157,7 @@ SG_BEGIN
 namespace detail{
 	enum class eOnScopeExit {}; // dummy
 
+	// A simple and easy-understanding implement but take up more size
 	class ScopeGuard final
 	{
 		friend ScopeGuard operator+(eOnScopeExit, std::function<void()>);
@@ -188,6 +192,7 @@ namespace detail{
 		bool m_active = true;
 	};
 
+	/* --- The helper functions provided multiple usages --- */
 	inline ScopeGuard operator+(eOnScopeExit, std::function<void()> callback)
 	{
 		return ScopeGuard(callback);
@@ -197,6 +202,7 @@ namespace detail{
 	{
 		return ScopeGuard(callback);
 	}
+	/* ----------------------------------------------------- */
 } // namespace detail
 
 using detail::MakeScopeGuard;
