@@ -238,7 +238,8 @@ TEST_METHOD(USAGE_MakeScopeGuard)
 	TEST_CASE
 		auto sg3 = sgFactory([] { cout << "lambda from factory" << endl; CASE_DONE; });
 
-
+	TEST_CASE
+		const auto sg4 = sg::MakeScopeGuard(expect_func);
 }
 
 // test case before merge branch std-function-like
