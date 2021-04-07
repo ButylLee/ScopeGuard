@@ -1,8 +1,6 @@
 # ScopeGuard
 A header-only, modern C++ ScopeGuard facility that provide multiple usages which are simple and easy to use.
 
-**NOTE:** It's almost finished but need more tests.
-
 ### Simple examples
 
 There're 3 ways to use ScopeGuard:
@@ -46,7 +44,7 @@ There're 3 ways to use ScopeGuard:
 } // my_callback is invoked at this point
 ```
 
-You could also see the comments in [ScopeGuard.h](ScopeGuard/ScopeGuard.h).
+You could see the comments in [ScopeGuard.h](ScopeGuard/ScopeGuard.h) for more.
 
 
 
