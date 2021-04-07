@@ -37,23 +37,32 @@
  *                  ^^^^lambda, function or executable object
  *       -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
  *
- * (3) Using function MakeScopeGuard to create named variables when you
- *     have got to postpone or bring forward the release of resource.
+ * (3) Using function MakeScopeGuard to create named variables so that you
+ *     could apply ROLLBACK pattern or modify releasing(i.e. change the
+ *     lifetime of ScopeGuard).
  *
  *       -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
- *       // acquire resource here
- *       auto sg = sg::MakeScopeGuard([&] { // release statment });
- *                                    ^^^^lambda, function or executable object
+ *       // ROLLBACK pattern
+ *       {
+ *           auto sg = sg::MakeScopeGuard([&] { // release statment });
+ *                                        ^^^^lambda, function or executable object
  *
- *       // release ahead of time vvv
- *       // manual release statment
- *       sg.dismiss();
+ *           // do something that may fail and throw exception
+ *           sg.dismiss(); // if succeed, don't rollback
+ *       }
  *
- *       // postpone release vvv
- *       auto foo(){
+ *       // prolong or shorten the lifetime(barely use)
+ *       auto prolong()
+ *       {
  *           // acquire resource here
  *           auto sg = sg::MakeScopeGuard([&] { // release statment });
  *           return sg;
+ *       }
+ *       void shorten()
+ *       {
+ *           // acquire resource here
+ *           auto sg = sg::MakeScopeGuard([&] { // release statment });
+ *           foo(std::move(sg));
  *       }
  *       -*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-
  */
