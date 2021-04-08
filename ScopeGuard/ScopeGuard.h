@@ -95,7 +95,7 @@ namespace detail {
 	// Determining whether a type is a proper callback that ScopeGuard need
 	template<typename T>
 	constexpr bool is_proper_callback_v
-		= std::is_same_v<void, decltype(std::declval<T&&>()())>;
+		= std::is_same_v<void, decltype(std::declval<T>()())>;
 
 	template<typename TCallback, typename =
 		std::enable_if_t<is_proper_callback_v<TCallback>>>
