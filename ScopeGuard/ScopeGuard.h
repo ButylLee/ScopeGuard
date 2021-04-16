@@ -88,6 +88,7 @@
 		auto SG_LINE_NAME(SCOPEGUARD_,__LINE__) = sg::MakeScopeGuard(callback)
 
 #if SG_USING_TEMPLATE
+#include <utility>
 #include <type_traits>
 
 SG_BEGIN
