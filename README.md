@@ -1,6 +1,8 @@
 # ScopeGuard
 A header-only, modern C++ ScopeGuard facility that provide multiple usages which are simple and easy to use.
 
+C++14 or later standard is required.
+
 ### Simple examples
 
 There're 3 ways to use ScopeGuard:
