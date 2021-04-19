@@ -1,5 +1,5 @@
 # ScopeGuard
-A header-only, modern C++ facility ScopeGuard which is universal and fast, providing multiple usages which are simple and easy to use.
+A header-only, modern C++ and fast facility ScopeGuard that provide multiple usages which are simple and easy to use.
 
 C++14 or later standard is required.
 
