@@ -70,9 +70,6 @@
 #ifndef SCOPEGUARD_H_
 #define SCOPEGUARD_H_
 
-// sizeof ScopeGuard with template: 8 in x86 and 16 in x64(aligned)
-// sizeof ScopeGuard with std::function: 48 in x86 and 72 in x64(aligned)
-// just use template version :D
 #define SG_USING_TEMPLATE 1
 
 #define SG_BEGIN namespace sg {
