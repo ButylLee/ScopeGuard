@@ -124,7 +124,7 @@ namespace detail {
 		friend constexpr ScopeGuard<TCallback> MakeScopeGuard<TCallback>(TCallback&&);
 	private:
 		explicit ScopeGuard(Callback callback)
-			:m_callback(std::move(callback))
+			: m_callback(std::move(callback))
 		{}
 	public:
 		~ScopeGuard() noexcept
@@ -170,7 +170,9 @@ namespace detail{
 		friend ScopeGuard operator+(eOnScopeExit, std::function<void()>);
 		friend ScopeGuard MakeScopeGuard(std::function<void()>);
 	private:
-		explicit ScopeGuard(std::function<void()> callback) :m_callback(callback) {}
+		explicit ScopeGuard(std::function<void()> callback)
+			: m_callback(callback)
+		{}
 	public:
 		~ScopeGuard() noexcept
 		{
