@@ -134,7 +134,7 @@ namespace detail {
 		}
 
 		ScopeGuard(ScopeGuard&& other)
-			noexcept(std::is_nothrow_move_constructible_v<Callback>)
+			noexcept(std::is_nothrow_move_constructible<Callback>::value) // std::is_nothrow_move_constructible_v is not defined until C++17
 			: m_callback(std::move(other.m_callback))
 			, m_active(std::move(other.m_active))
 		{
@@ -181,7 +181,7 @@ namespace detail{
 		}
 
 		ScopeGuard(ScopeGuard&& other)
-			noexcept(std::is_nothrow_move_constructible_v<std::function<void()>>)
+			noexcept(std::is_nothrow_move_constructible<std::function<void()>>::value) // std::is_nothrow_move_constructible_v is not defined until C++17
 			: m_callback(std::move(other.m_callback))
 			, m_active(std::move(other.m_active))
 		{
