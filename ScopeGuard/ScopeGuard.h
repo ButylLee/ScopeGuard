@@ -1,5 +1,6 @@
 ﻿/*
  *         <ScopeGuard>  By James Taylor(ButylLee)
+ *                        2021/11/19
  *          https://github.com/ButylLee/ScopeGuard
  * ScopeGuard is a so-called Universal Resource Management
  * Class that employs RAII pattern. It provides a common way
