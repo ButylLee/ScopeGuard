@@ -118,33 +118,33 @@ namespace {
 TEST_METHOD(USAGE_ON_SCOPE_EXIT)
 {
 	TEST_CASE
-		ON_SCOPE_EXIT{
+		finally{
 			PRINTMSG;
 			CASE_DONE;
 		};
 	
 
 	TEST_CASE
-		ON_SCOPE_EXIT{
+		finally{
 			expect_func();
 		};
 	
 	TEST_CASE
-		ON_SCOPE_EXIT{
+		finally{
 			expect_func_nothrow();
 		};
 
-	ON_SCOPE_EXIT{
+	finally{
 		//throw runtime_error(message); // could NOT throw here
 	};
-	ON_SCOPE_EXIT{
+	finally{
 		//return 0; // could NOT return value here
 		return;
 	};
 
 	int mutable_v = 0;
 	string mutable_str = "origin string";
-	ON_SCOPE_EXIT{
+	finally{
 		mutable_v = 1;
 		mutable_str = " changed string";
 		cout << mutable_v << mutable_str << endl;
@@ -157,74 +157,74 @@ TEST_METHOD(USAGE_SCOPEGUARD)
 {
 	// pass by lvalue
 	TEST_CASE
-		SCOPEGUARD(lambda_expect);
+		INVOKE_ON_EXIT(lambda_expect);
 	TEST_CASE
-		SCOPEGUARD(functor_expect);
+		INVOKE_ON_EXIT(functor_expect);
 	TEST_CASE
-		SCOPEGUARD(expect_func);
+		INVOKE_ON_EXIT(expect_func);
 	TEST_CASE
-		SCOPEGUARD(pointer_expect_func);
+		INVOKE_ON_EXIT(pointer_expect_func);
 
 	TEST_CASE
-		SCOPEGUARD(expect_func_nothrow);
+		INVOKE_ON_EXIT(expect_func_nothrow);
 
-	//SCOPEGUARD(throwing);
-	//SCOPEGUARD(returning);
-	//SCOPEGUARD(para_int);
-	//SCOPEGUARD(para_int);
-	//SCOPEGUARD(pointer_throwing);
-	//SCOPEGUARD(pointer_returning);
-	//SCOPEGUARD(pointer_para_int);
-
-	TEST_CASE
-		SCOPEGUARD(pointer_expect_func);
-	TEST_CASE
-		SCOPEGUARD(pointer_expect_func_nothrow);
-
+	//INVOKE_ON_EXIT(throwing);
+	//INVOKE_ON_EXIT(returning);
+	//INVOKE_ON_EXIT(para_int);
+	//INVOKE_ON_EXIT(para_int);
+	//INVOKE_ON_EXIT(pointer_throwing);
+	//INVOKE_ON_EXIT(pointer_returning);
+	//INVOKE_ON_EXIT(pointer_para_int);
 
 	TEST_CASE
-		SCOPEGUARD(functor_expect);
+		INVOKE_ON_EXIT(pointer_expect_func);
 	TEST_CASE
-		SCOPEGUARD(functor_expect_const);
-	TEST_CASE
-		SCOPEGUARD(functor_expect_nothrow);
-	//SCOPEGUARD(functor_throwing);
-	//SCOPEGUARD(functor_returning);
-	//SCOPEGUARD(functor_para_int);
+		INVOKE_ON_EXIT(pointer_expect_func_nothrow);
+
 
 	TEST_CASE
-		SCOPEGUARD(lambda_expect);
+		INVOKE_ON_EXIT(functor_expect);
 	TEST_CASE
-		SCOPEGUARD(lambda_expect_copy_cap);
+		INVOKE_ON_EXIT(functor_expect_const);
 	TEST_CASE
-		SCOPEGUARD(lambda_expect_ref_cap);
-
-	//SCOPEGUARD(stdfun_throwing);
-	TEST_CASE
-		SCOPEGUARD(stdfun_expect);
-	TEST_CASE
-		SCOPEGUARD(stdfun_expect_nothrow);
-	//SCOPEGUARD(stdfun_returning);
-	//SCOPEGUARD(stdfun_para_int);
+		INVOKE_ON_EXIT(functor_expect_nothrow);
+	//INVOKE_ON_EXIT(functor_throwing);
+	//INVOKE_ON_EXIT(functor_returning);
+	//INVOKE_ON_EXIT(functor_para_int);
 
 	TEST_CASE
-		SCOPEGUARD(bind_expect_func);
-	//SCOPEGUARD(bind_throwing);
-	//SCOPEGUARD(bind_returning);
-	//SCOPEGUARD(bind_para_int);
+		INVOKE_ON_EXIT(lambda_expect);
+	TEST_CASE
+		INVOKE_ON_EXIT(lambda_expect_copy_cap);
+	TEST_CASE
+		INVOKE_ON_EXIT(lambda_expect_ref_cap);
+
+	//INVOKE_ON_EXIT(stdfun_throwing);
+	TEST_CASE
+		INVOKE_ON_EXIT(stdfun_expect);
+	TEST_CASE
+		INVOKE_ON_EXIT(stdfun_expect_nothrow);
+	//INVOKE_ON_EXIT(stdfun_returning);
+	//INVOKE_ON_EXIT(stdfun_para_int);
+
+	TEST_CASE
+		INVOKE_ON_EXIT(bind_expect_func);
+	//INVOKE_ON_EXIT(bind_throwing);
+	//INVOKE_ON_EXIT(bind_returning);
+	//INVOKE_ON_EXIT(bind_para_int);
 
 	// pass by rvalue
 	TEST_CASE
-		SCOPEGUARD(&expect_func);
+		INVOKE_ON_EXIT(&expect_func);
 	TEST_CASE
-		SCOPEGUARD(expect_struct());
+		INVOKE_ON_EXIT(expect_struct());
 	TEST_CASE
-		SCOPEGUARD([] { PRINTMSG; CASE_DONE; });
+		INVOKE_ON_EXIT([] { PRINTMSG; CASE_DONE; });
 
 	TEST_CASE
-		SCOPEGUARD(functor_test_copy_move); // lvalue
+		INVOKE_ON_EXIT(functor_test_copy_move); // lvalue
 	TEST_CASE
-		SCOPEGUARD(test_copy_move_struct()); // rvalue
+		INVOKE_ON_EXIT(test_copy_move_struct()); // rvalue
 }
 
 // same as USAGE_SCOPEGUARD at large
@@ -247,12 +247,12 @@ TEST_METHOD(TEST_PASS_RVALUE)
 {
 	using fun_type = void(*)();
 	fun_type f = []{cout << "origin" << endl; };
-	SCOPEGUARD(f);
-	SCOPEGUARD(*f);
+	INVOKE_ON_EXIT(f);
+	INVOKE_ON_EXIT(*f);
 	f = []{cout << "changed" << endl; };
 
-	SCOPEGUARD(functor_test_rvalue);
-	SCOPEGUARD(std::move(functor_test_rvalue));
+	INVOKE_ON_EXIT(functor_test_rvalue);
+	INVOKE_ON_EXIT(std::move(functor_test_rvalue));
 	functor_test_rvalue.setx(1);
 
 }

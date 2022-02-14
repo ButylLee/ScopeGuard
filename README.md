@@ -1,5 +1,5 @@
 # ScopeGuard
-A header-only, modern C++ and fast facility ScopeGuard that provide multiple usages which are simple and easy to use.
+A header-only, modern C++ and fast facility ScopeGuard that provide multiple usages which are simple and easy to use as other languages provide.
 
 C++14 or later standard is required.
 
@@ -7,13 +7,13 @@ C++14 or later standard is required.
 
 There're 3 ways to use ScopeGuard:
 
-1. Put the code executing when leaving current scope in code block **ON_SCOPE_EXIT{ }**.
+1. Put the code executing when leaving current scope in code block **finally{ }**.
 ```C++
 #include "ScopeGuard.h"
 ...
 {
     ...
-    ON_SCOPE_EXIT{
+    finally{
         // callback statments
         // such as releasing resources
     };
@@ -21,16 +21,16 @@ There're 3 ways to use ScopeGuard:
 } // callback statments are executed at this point
 ```
 
-2. put callable in **SCOPEGUARD( )**
+2. put callable in **INVOKE_ON_EXIT( )**
 
 ```C++
 ...
 {
     void my_callback();
     ...
-    SCOPEGUARD(my_callback);
+    INVOKE_ON_EXIT(my_callback);
     ...
-    SCOPEGUARD([&] { // releasing resources });
+    INVOKE_ON_EXIT([&] { /* releasing resources  });
     ...
 } // lambda and my_callback are invoked at this point
 ```
@@ -51,7 +51,6 @@ You could see the comments in [ScopeGuard.h](ScopeGuard/ScopeGuard.h) for more.
 ### Tutorial
 
 See tutorial [here](http://origought.cn/2021/cpp/88/) and also [here](http://origought.cn/2021/cpp/99/) (Chinese).
-
 
 
 
