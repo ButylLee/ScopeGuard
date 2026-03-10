@@ -48,9 +48,9 @@ There're 3 ways to use ScopeGuard:
 
 You could see the comments in [ScopeGuard.h](ScopeGuard/ScopeGuard.h) for more.
 
-### Tutorial
+### Technical Blog
 
-See tutorial [here](https://butyllee.github.io/posts/ScopeGuard%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D%E4%B8%8E%E5%AE%9E%E7%8E%B0/) (Chinese).
+See Blog [here](https://butyllee.github.io/posts/ScopeGuard%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D%E4%B8%8E%E5%AE%9E%E7%8E%B0/) (Chinese).
 
 
 
