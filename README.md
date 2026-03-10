@@ -50,7 +50,7 @@ You could see the comments in [ScopeGuard.h](ScopeGuard/ScopeGuard.h) for more.
 
 ### Tutorial
 
-See tutorial [here](http://origought.cn/2021/cpp/88/) and also [here](http://origought.cn/2021/cpp/99/) (Chinese).
+See tutorial [here](https://butyllee.github.io/posts/ScopeGuard%E5%8E%9F%E7%90%86%E4%BB%8B%E7%BB%8D%E4%B8%8E%E5%AE%9E%E7%8E%B0/) (Chinese).
 
 
 
